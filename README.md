@@ -1,4 +1,4 @@
-# Vertical bar chart
+# Horizontal bar chart
 
 - **x** - number of patents
 - **y** - companies
