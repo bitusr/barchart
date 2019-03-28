@@ -34,8 +34,8 @@ const dummyData = {
     {applicant: "Mary", patents: 29},
   ],
   1940: [
-    {applicant: "Yolanda", patents: 120},
-    {applicant: "Robin", patents: 12},
+    {applicant: "Yolanda", patents: 80},
+    {applicant: "Robin", patents: 110},
     {applicant: "Joe", patents: 13},
     {applicant: "Anne", patents: 41},
     {applicant: "Lisa", patents: 47},
@@ -51,24 +51,6 @@ const dummyData = {
     {applicant: "Mary", patents: 29},
   ],
 };
-
-const data = [
-  {applicant: "Bob", patents: 33},
-  {applicant: "Robin", patents: 12},
-  {applicant: "Anne", patents: 41},
-  {applicant: "Mark", patents: 16},
-  {applicant: "Joe", patents: 59},
-  {applicant: "Eve", patents: 38},
-  {applicant: "Karen", patents: 21},
-  {applicant: "Kirsty", patents: 25},
-  {applicant: "Chris", patents: 30},
-  {applicant: "Lisa", patents: 47},
-  {applicant: "Tom", patents: 5},
-  {applicant: "Stacy", patents: 20},
-  {applicant: "Charles", patents: 13},
-  {applicant: "Mary", patents: 29},
-  {applicant: "Yolanda", patents: 90},
-];
 
 const margin = { top: 20, right: 20, bottom: 20, left: 60 };
 const width = 960 - margin.left - margin.right;
@@ -100,7 +82,7 @@ svg.append(`g`)
   .attr(`id`, `y-axis`);
 
 const update = (allData, year) => {
-  const data = allData[year];
+  const data = allData[year].sort((a, b) => a.patents - b.patents);
 
   xScale.domain([0, d3.max(data, d => d.patents)]);
   yScale.domain(data.map(d => d.applicant));
@@ -126,11 +108,9 @@ const update = (allData, year) => {
     .transition(t)
     .attr(`width`, d => xScale(d.patents));
 
-  d3.select(`#x-axis`)
-    .call(d3.axisBottom(xScale));
+  d3.select(`#x-axis`).call(d3.axisBottom(xScale));
 
-  d3.select(`#y-axis`)
-    .call(d3.axisLeft(yScale));
+  d3.select(`#y-axis`).call(d3.axisLeft(yScale));
 };
 
 document.querySelector(`#year-control`).addEventListener(`change`, evt => {
