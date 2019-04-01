@@ -119,7 +119,7 @@ const update = (allData, year) => {
 
   bar.select(`text`)
     .text(d => d.patents)
-    .attr('x', d => xScale(d.patents) - 6);
+    .attr('x', d => xScale(d.patents) - 10);
 
   d3.select(`#x-axis`).call(d3.axisBottom(xScale));
 
