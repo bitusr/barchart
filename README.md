@@ -10,4 +10,4 @@ There should be a button which starts the year loop. It changes the years for th
 \
 [Example with d3 v3](https://codepen.io/va1da5/pen/ORkYQO)\
 [Object constancy article with another example](https://bost.ocks.org/mike/constancy/)\
-[Great explanation of SVG groups](https://www.dashingd3js.com/svg-group-element-and-d3js)\
+[Great explanation of SVG groups](https://www.dashingd3js.com/svg-group-element-and-d3js)
