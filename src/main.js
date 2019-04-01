@@ -69,7 +69,7 @@ const yScale = d3.scaleBand()
   .range([height, 0]).padding(0.5);
 
 const colorScale = d3.scaleOrdinal()
-  .range([`green`, `orange`, `blue`]);
+  .range(d3.schemeCategory10);
 
 svg.append(`g`)
   .attr(`id`, `x-axis`)
@@ -101,16 +101,16 @@ const update = (allData, year) => {
 
   barEnter.append(`rect`)
     .attr(`height`, 23)
-    .attr(`fill`, d => `steelblue`)
+    .attr(`fill`, d => colorScale(d.applicant))
     .attr(`width`, d => xScale(d.patents));
 
   barEnter.append(`text`)
     .attr(`text-anchor`, `end`)
-    .attr(`font-size`, `14px`)
-    .attr(`fill`, `black`)
+    .attr(`font-size`, `12px`)
+    .attr(`fill`, `#fff`)
     .attr('y', 16)
     .text(d => d.patents)
-    .attr('x', d => xScale(d.patents) - 6);
+    .attr('x', d => xScale(d.patents) - 10);
 
   bar = barEnter.merge(bar);
 
