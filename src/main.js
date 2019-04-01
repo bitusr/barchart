@@ -78,12 +78,6 @@ svg.append(`g`)
 svg.append(`g`)
   .attr(`id`, `y-axis`);
 
-
-
-
-
-
-
 const update = (allData, year) => {
   const sortedData = allData[year].sort((a, b) => a.patents - b.patents);
   const data = sortedData.slice(sortedData.length - 10);
@@ -95,12 +89,7 @@ const update = (allData, year) => {
   let bar = svg.selectAll(`.bar`)
     .data(data, d => d.applicant);
 
-  console.log(bar, 'UPDATE')
-
-  const exit = bar.exit()
-
-  exit.remove()
-  console.log(exit, `EXIT`)
+  bar.exit().remove();
 
   bar.transition(t)
     .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`);
@@ -108,37 +97,34 @@ const update = (allData, year) => {
   const barEnter = bar.enter()
     .append(`g`)
     .attr(`class`, `bar`)
-    .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`)
+    .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`);
 
   barEnter.append(`rect`)
     .attr(`height`, 23)
     .attr(`fill`, d => `steelblue`)
-    .attr(`width`, d => xScale(d.patents))
-    // .attr('y', d => yScale(d.applicant))
+    .attr(`width`, d => xScale(d.patents));
 
   barEnter.append(`text`)
     .attr(`text-anchor`, `end`)
     .attr(`font-size`, `14px`)
     .attr(`fill`, `black`)
     .attr('y', 16)
-    // .attr('y', d => yScale(d.applicant))
     .text(d => d.patents)
-    .attr('x', d => xScale(d.patents) - 6)
+    .attr('x', d => xScale(d.patents) - 6);
 
-  console.log(barEnter, `ENTER`)
+  bar = barEnter.merge(bar);
 
-  bar = barEnter.merge(bar)
+  bar.select(`rect`)
+    .attr(`width`, d => xScale(d.patents));
+
+  bar.select(`text`)
+    .text(d => d.patents)
+    .attr('x', d => xScale(d.patents) - 6);
 
   d3.select(`#x-axis`).call(d3.axisBottom(xScale));
 
   d3.select(`#y-axis`).call(d3.axisLeft(yScale));
 };
-
-
-
-
-
-
 
 document.querySelector(`#year-control`).addEventListener(`change`, evt => {
   if (!evt.target.value) update(dummyData, 1920);
