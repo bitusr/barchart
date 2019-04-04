@@ -1,5 +1,5 @@
 const dummyData = {
-  1920: [
+  2000: [
     {applicant: "Bob", patents: 12},
     {applicant: "Robin", patents: 25},
     {applicant: "Anne", patents: 28},
@@ -15,7 +15,7 @@ const dummyData = {
     {applicant: "Mary", patents: 29},
     {applicant: "Yolanda", patents: 87},
   ],
-  1930: [
+  2001: [
     {applicant: "Bob", patents: 33},
     {applicant: "Robin", patents: 12},
     {applicant: "Anne", patents: 41},
@@ -31,21 +31,21 @@ const dummyData = {
     {applicant: "Mary", patents: 29},
     {applicant: "Yolanda", patents: 120},
   ],
-  1940: [
-    {applicant: "Bob", patents: 5},
-    {applicant: "Robin", patents: 25},
-    {applicant: "Anne", patents: 3},
-    {applicant: "Mark", patents: 16},
-    {applicant: "Joe", patents: 59},
-    {applicant: "Eve", patents: 11},
-    {applicant: "Karen", patents: 21},
-    {applicant: "Kirsty", patents: 25},
-    {applicant: "Chris", patents: 8},
-    {applicant: "Lisa", patents: 47},
-    {applicant: "Tom", patents: 5},
-    {applicant: "Charles", patents: 67},
-    {applicant: "Mary", patents: 29},
-    {applicant: "Yolanda", patents: 22},
+  2002: [
+    {applicant: "Bob", patents: 500},
+    {applicant: "Robin", patents: 2500},
+    {applicant: "Anne", patents: 300},
+    {applicant: "Mark", patents: 1600},
+    {applicant: "Joe", patents: 5900},
+    {applicant: "Eve", patents: 1100},
+    {applicant: "Karen", patents: 2100},
+    {applicant: "Kirsty", patents: 250},
+    {applicant: "Chris", patents: 800},
+    {applicant: "Lisa", patents: 470},
+    {applicant: "Tom", patents: 50},
+    {applicant: "Charles", patents: 6700},
+    {applicant: "Mary", patents: 2900},
+    {applicant: "Yolanda", patents: 2200},
   ],
 };
 
@@ -79,10 +79,10 @@ svg.append(`g`)
   .attr(`id`, `y-axis`);
 
 const update = (allData, year) => {
-  const sortedData = allData[year].sort((a, b) => a.patents - b.patents);
+  const sortedData = Object.values(allData[year]).sort((a, b) => a.patents - b.patents);
   const data = sortedData.slice(sortedData.length - 10);
 
-  xScale.domain([0, d3.max(data, d => d.patents)]);
+  xScale.domain([0, d3.max(data, d => +d.patents)]);
   yScale.domain(data.map(d => d.applicant));
   colorScale.domain(data.map(d => d.applicant));
 
@@ -100,35 +100,62 @@ const update = (allData, year) => {
     .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`);
 
   barEnter.append(`rect`)
-    .attr(`height`, 23)
+    .attr(`height`, 30)
     .attr(`fill`, d => colorScale(d.applicant))
-    .attr(`width`, d => xScale(d.patents));
+    .attr(`width`, d => xScale(+d.patents));
 
   barEnter.append(`text`)
     .attr(`text-anchor`, `end`)
     .attr(`font-size`, `12px`)
     .attr(`fill`, `#fff`)
-    .attr('y', 16)
+    .attr('y', 20)
     .text(d => d.patents)
-    .attr('x', d => xScale(d.patents) - 10);
+    .attr('x', d => xScale(+d.patents) - 10);
 
   bar = barEnter.merge(bar);
 
   bar.select(`rect`)
-    .attr(`width`, d => xScale(d.patents));
+    .attr(`width`, d => xScale(+d.patents));
 
   bar.select(`text`)
     .text(d => d.patents)
-    .attr('x', d => xScale(d.patents) - 10);
+    .attr('x', d => xScale(+d.patents) - 10)
+    .transition().duration(1500)
+    // .attrTween(`text`, function(d) {
+    //   // console.log(this.textContent, d.patents)
+    //   const interpolator = d3.interpolateRound(+this.textContent, +d.patents);
+    //   return function (t) {
+    //     console.log(t, interpolator(t))
+    //     return interpolator(t);
+    //   }
+    // });
 
   d3.select(`#x-axis`).call(d3.axisBottom(xScale));
 
   d3.select(`#y-axis`).call(d3.axisLeft(yScale));
 };
 
-document.querySelector(`#year-control`).addEventListener(`change`, evt => {
-  if (!evt.target.value) update(dummyData, 1920);
-  else update(dummyData, evt.target.value);
-});
+const generateData = (number, fn) => [...Array(number)].forEach((it, i) => fn(it, i));
 
-update(dummyData, 1920);
+const convertData = (acc, d) => {
+  const startYear = 2000;
+  generateData(20, (it, i) => {
+    const year = startYear + i;
+    acc[year] = { ...acc[year] };
+    acc[year][d[`Applicant`]] = { applicant: d[`Applicant`], patents: d[year] };
+  });
+  return acc;
+};
+
+const SELECT_YEAR_ELEMENT = document.querySelector(`#year-control`);
+
+d3.tsv(`../data/test_data.csv`)
+  .then(result => {
+    const parsedData = result.reduce(convertData, {});
+    SELECT_YEAR_ELEMENT.addEventListener(`change`, evt => {
+      if (!evt.target.value) update(dummyData, 2000);
+      else update(dummyData, evt.target.value);
+    });
+    update(dummyData, 2000);
+  })
+  .catch(err => console.error(err));
