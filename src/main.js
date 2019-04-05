@@ -9,8 +9,6 @@ const svg = d3.select(`#wrapper`)
   .append(`g`)
   .attr(`transform`, `translate(${margin.left}, ${margin.top})`);
 
-const t = d3.transition().duration(1000);
-
 const xScale = d3.scaleLinear()
   .range([0, width]);
 
@@ -36,7 +34,8 @@ const update = (allData, year) => {
 
   bar.exit().remove();
 
-  bar.transition(t)
+  // TODO add easings ==================================================================================================
+  bar.transition().duration(600)
     .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`);
 
   const barEnter = bar.enter()
@@ -60,6 +59,7 @@ const update = (allData, year) => {
   bar = barEnter.merge(bar);
 
   bar.select(`rect`)
+    .transition().duration(300)
     .attr(`width`, d => xScale(+d.patents));
 
   bar.select(`text`)
