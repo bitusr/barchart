@@ -1,106 +1,6 @@
-const dummyData = {
-  2000: [
-    {applicant: "Bob", patents: 12},
-    {applicant: "Robin", patents: 25},
-    {applicant: "Anne", patents: 28},
-    {applicant: "Mark", patents: 16},
-    {applicant: "Joe", patents: 59},
-    {applicant: "Eve", patents: 34},
-    {applicant: "Karen", patents: 21},
-    {applicant: "Kirsty", patents: 25},
-    {applicant: "Chris", patents: 30},
-    {applicant: "Lisa", patents: 47},
-    {applicant: "Tom", patents: 5},
-    {applicant: "Charles", patents: 77},
-    {applicant: "Mary", patents: 29},
-    {applicant: "Yolanda", patents: 87},
-  ],
-  2001: [
-    {applicant: "Bob", patents: 23},
-    {applicant: "Robin", patents: 234},
-    {applicant: "Anne", patents: 567},
-    {applicant: "Mark", patents: 231},
-    {applicant: "Joe", patents: 345},
-    {applicant: "Eve", patents: 567},
-    {applicant: "Karen", patents: 39},
-    {applicant: "Kirsty", patents: 90},
-    {applicant: "Chris", patents: 80},
-    {applicant: "Lisa", patents: 70},
-    {applicant: "Tom", patents: 50},
-    {applicant: "Charles", patents: 45},
-    {applicant: "Mary", patents: 290},
-    {applicant: "Yolanda", patents: 778},
-  ],
-  2002: [
-    {applicant: "Bob", patents: 500},
-    {applicant: "Robin", patents: 2500},
-    {applicant: "Anne", patents: 300},
-    {applicant: "Mark", patents: 1600},
-    {applicant: "Joe", patents: 5900},
-    {applicant: "Eve", patents: 1100},
-    {applicant: "Karen", patents: 2100},
-    {applicant: "Kirsty", patents: 250},
-    {applicant: "Chris", patents: 800},
-    {applicant: "Lisa", patents: 470},
-    {applicant: "Tom", patents: 50},
-    {applicant: "Charles", patents: 6700},
-    {applicant: "Mary", patents: 2900},
-    {applicant: "Yolanda", patents: 2200},
-  ],
-  2003: [
-    {applicant: "Bob", patents: 500},
-    {applicant: "Robin", patents: 46},
-    {applicant: "Anne", patents: 56},
-    {applicant: "Mark", patents: 84},
-    {applicant: "Joe", patents: 590},
-    {applicant: "Eve", patents: 324},
-    {applicant: "Karen", patents: 434},
-    {applicant: "Kirsty", patents: 23},
-    {applicant: "Chris", patents: 800},
-    {applicant: "Lisa", patents: 470},
-    {applicant: "Tom", patents: 50},
-    {applicant: "Charles", patents: 23},
-    {applicant: "Mary", patents: 55},
-    {applicant: "Yolanda", patents: 77},
-  ],
-  2004: [
-    {applicant: "Bob", patents: 33},
-    {applicant: "Robin", patents: 12},
-    {applicant: "Anne", patents: 41},
-    {applicant: "Mark", patents: 16},
-    {applicant: "Joe", patents: 59},
-    {applicant: "Eve", patents: 38},
-    {applicant: "Karen", patents: 21},
-    {applicant: "Kirsty", patents: 25},
-    {applicant: "Chris", patents: 30},
-    {applicant: "Lisa", patents: 47},
-    {applicant: "Tom", patents: 5},
-    {applicant: "Charles", patents: 13},
-    {applicant: "Mary", patents: 29},
-    {applicant: "Yolanda", patents: 120},
-  ],
-  2005: [
-    {applicant: "Bob", patents: 50},
-    {applicant: "Robin", patents: 250},
-    {applicant: "Anne", patents: 30},
-    {applicant: "Mark", patents: 160},
-    {applicant: "Joe", patents: 590},
-    {applicant: "Eve", patents: 110},
-    {applicant: "Karen", patents: 210},
-    {applicant: "Kirsty", patents: 25},
-    {applicant: "Chris", patents: 80},
-    {applicant: "Lisa", patents: 47},
-    {applicant: "Tom", patents: 5},
-    {applicant: "Charles", patents: 670},
-    {applicant: "Mary", patents: 290},
-    {applicant: "Yolanda", patents: 220},
-  ],
-};
-
 const margin = { top: 20, right: 40, bottom: 20, left: 60 };
 const width = 960 - margin.left - margin.right;
 const height = 400 - margin.top - margin.bottom;
-const NUMBER_OF_APPLICANTS = 10;
 
 const svg = d3.select(`#wrapper`)
   .append(`svg`)
@@ -180,28 +80,13 @@ const update = (allData, year) => {
   d3.select(`#y-axis`).call(d3.axisLeft(yScale));
 };
 
-const loop = (number, fn) => [...Array(number)].forEach((it, i) => fn(it, i));
-
-const convertData = (acc, d) => {
-  const startYear = 2000;
-  loop(20, (it, i) => {
-    const year = startYear + i;
-    acc[year] = { ...acc[year] };
-    acc[year][d[`Applicant`]] = { applicant: d[`Applicant`], patents: d[year] };
-  });
-  return acc;
-};
-
-const SELECT_YEAR_ELEMENT = document.querySelector(`#year-control`);
-const LOOP_ELEMENT = document.querySelector(`#loop-control`);
-
 d3.tsv(`../data/test_data.csv`)
   .then(result => {
     const parsedData = result.reduce(convertData, {});
 
     SELECT_YEAR_ELEMENT.addEventListener(`change`, evt => {
-      if (!evt.target.value) update(dummyData, 2000);
-      else update(dummyData, evt.target.value);
+      if (!evt.target.value) update(DUMMY_DATA, 2000);
+      else update(DUMMY_DATA, evt.target.value);
     });
 
     LOOP_ELEMENT.addEventListener(`click`, evt => {
@@ -211,7 +96,7 @@ d3.tsv(`../data/test_data.csv`)
         if (year > 2005) interval.stop();
         else {
           SELECT_YEAR_ELEMENT.selectedIndex = index;
-          update(dummyData, year);
+          update(DUMMY_DATA, year);
         }
         year++;
         index++;
@@ -219,6 +104,6 @@ d3.tsv(`../data/test_data.csv`)
 
     });
 
-    update(dummyData, 2000);
+    update(DUMMY_DATA, 2000);
   })
   .catch(err => console.error(err));
