@@ -4,6 +4,10 @@ const LOOP_ELEMENT = document.querySelector(`#loop-control`);
 
 const NUMBER_OF_APPLICANTS = 10;
 
+const DEFAULT_BAR_COLOR = `rgb(46,81,103)`;
+
+const HOVER_BAR_COLOR = `rgb(237,122,62)`;
+
 const DUMMY_DATA = {
   2000: [
     {applicant: "Bob", patents: 12},

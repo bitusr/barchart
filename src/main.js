@@ -41,11 +41,18 @@ const update = (allData, year) => {
   const barEnter = bar.enter()
     .append(`g`)
     .attr(`class`, `bar`)
-    .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`);
+    .attr(`transform`, d => `translate(0, ${yScale(d.applicant)})`)
+    .on(`mouseover`, function(d, i) {
+      d3.select(this).select(`rect`).attr(`fill`, HOVER_BAR_COLOR)
+    })
+    .on(`mouseout`, function(d, i) {
+      d3.select(this).select(`rect`).attr(`fill`, DEFAULT_BAR_COLOR)
+    });
 
   barEnter.append(`rect`)
     .attr(`height`, 30)
-    .attr(`fill`, d => `rgb(46,81,103)`)
+    .attr(`fill`, d => DEFAULT_BAR_COLOR)
+    .transition().duration(600)
     .attr(`width`, d => xScale(+d.patents));
 
   barEnter.append(`text`)
@@ -54,18 +61,19 @@ const update = (allData, year) => {
     .attr(`fill`, `#ffffff`)
     .attr('y', 20)
     .text(d => d.patents)
+    .transition().duration(600)
     .attr('x', d => xScale(+d.patents) - 10);
 
   bar = barEnter.merge(bar);
 
   bar.select(`rect`)
-    .transition().duration(300)
+    .transition().duration(600)
     .attr(`width`, d => xScale(+d.patents));
 
   bar.select(`text`)
     .text(d => d.patents)
+    .transition().duration(600)
     .attr('x', d => xScale(+d.patents) - 10)
-    .transition().duration(1500)
     // .attrTween(`text`, function(d) {
     //   // console.log(this.textContent, d.patents)
     //   const interpolator = d3.interpolateRound(+this.textContent, +d.patents);
