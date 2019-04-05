@@ -18,8 +18,8 @@ const dummyData = {
   2001: [
     {applicant: "Bob", patents: 23},
     {applicant: "Robin", patents: 234},
-    {applicant: "Anne", patents: 234},
-    {applicant: "Mark", patents: 234},
+    {applicant: "Anne", patents: 567},
+    {applicant: "Mark", patents: 231},
     {applicant: "Joe", patents: 345},
     {applicant: "Eve", patents: 567},
     {applicant: "Karen", patents: 39},
@@ -146,13 +146,13 @@ const update = (allData, year) => {
 
   barEnter.append(`rect`)
     .attr(`height`, 30)
-    .attr(`fill`, d => `steelblue`)
+    .attr(`fill`, d => `rgb(46,81,103)`)
     .attr(`width`, d => xScale(+d.patents));
 
   barEnter.append(`text`)
     .attr(`text-anchor`, `end`)
-    .attr(`font-size`, `12px`)
-    .attr(`fill`, `#fff`)
+    .attr(`font-size`, `14px`)
+    .attr(`fill`, `#ffffff`)
     .attr('y', 20)
     .text(d => d.patents)
     .attr('x', d => xScale(+d.patents) - 10);
@@ -206,11 +206,16 @@ d3.tsv(`../data/test_data.csv`)
 
     LOOP_ELEMENT.addEventListener(`click`, evt => {
       let year = 2000;
+      let index = 0;
       const interval = d3.interval(() => {
         if (year > 2005) interval.stop();
-        else update(dummyData, year);
+        else {
+          SELECT_YEAR_ELEMENT.selectedIndex = index;
+          update(dummyData, year);
+        }
         year++;
-      }, 1500)
+        index++;
+      }, 1500);
 
     });
 
